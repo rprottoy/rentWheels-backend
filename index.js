@@ -45,9 +45,16 @@ async function run() {
       res.send(result);
     });
 
-    // To see All the cars in the website by default
+    // To see limited cars in the website home page by default
     app.get("/featured-cars", async (req, res) => {
       const cursor = carsCollection.find().limit(6);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // To see all the cars in browseCars page by default
+    app.get("/browse-cars", async (req, res) => {
+      const cursor = carsCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
