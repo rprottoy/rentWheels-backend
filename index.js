@@ -32,9 +32,22 @@ async function run() {
     const db = client.db("rentWheels_db");
     const carsCollection = db.collection("browseCars");
 
-    // To get all The cars
+    // To get the cars based on user's email. if user is logged , then they will see their cars
     app.get("/browseCars", async (req, res) => {
+      const email = req.query.email;
+      const query = {};
+      if (email) {
+        query.email = email;
+      }
+
       const cursor = carsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // To see All the cars in the website by default
+    app.get("/featured-cars", async (req, res) => {
+      const cursor = carsCollection.find().limit(6);
       const result = await cursor.toArray();
       res.send(result);
     });
