@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 require("dotenv").config();
+
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 3000;
 
@@ -60,11 +61,19 @@ async function run() {
     });
 
     // To get a specific Car
-    app.get("/browseCars/:id", async (req, res) => {
+    app.get("/car-details/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await carsCollection.findOne(query);
       res.send(result);
+    });
+
+    // For Search functionality
+    app.get("/search", async (res, req) => {
+      const searchTerm = req.query.search;
+      const result = await carsCollection
+        .find({ name: { $regex: searchTerm, $options: "i" } })
+        .toArray();
     });
 
     // to new car details as json
@@ -74,7 +83,8 @@ async function run() {
       res.send(result);
     });
 
-    app.patch("/products/:id", async (req, res) => {
+    // To update any existing car
+    app.patch("/car/:id", async (req, res) => {
       const id = req.params.id;
       const updatedCar = req.body;
       const query = { _id: new ObjectId(id) };
