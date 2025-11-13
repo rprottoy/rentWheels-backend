@@ -46,6 +46,15 @@ async function run() {
       res.send(result);
     });
 
+    // To get User's Listings
+    app.get("/my-listings", async (req, res) => {
+      const email = req.query.email;
+      const result = await carsCollection
+        .find({ providerEmail: email })
+        .toArray();
+      res.send(result);
+    });
+
     // To see limited cars in the website home page by default
     app.get("/featured-cars", async (req, res) => {
       const cursor = carsCollection.find().limit(6);
@@ -69,16 +78,21 @@ async function run() {
     });
 
     // For Search functionality
-    app.get("/search", async (res, req) => {
+    app.get("/search", async (req, res) => {
+      console.log(req.query);
       const searchTerm = req.query.search;
       const result = await carsCollection
-        .find({ name: { $regex: searchTerm, $options: "i" } })
+        .find({ carName: { $regex: searchTerm, $options: "i" } })
         .toArray();
+
+      console.log(result);
+      res.send(result);
     });
 
     // to new car details as json
     app.post("/browseCars", async (req, res) => {
       const newCar = req.body;
+      console.log(newCar);
       const result = await carsCollection.insertOne(newCar);
       res.send(result);
     });
