@@ -89,7 +89,6 @@ async function run() {
 
     // For Search functionality
     app.get("/search", async (req, res) => {
-      console.log(req.query);
       const searchTerm = req.query.search;
       const result = await carsCollection
         .find({ carName: { $regex: searchTerm, $options: "i" } })
@@ -102,7 +101,7 @@ async function run() {
     // to new car details as json
     app.post("/browseCars", async (req, res) => {
       const newCar = req.body;
-      console.log(newCar);
+
       const result = await carsCollection.insertOne(newCar);
       res.send(result);
     });
@@ -127,7 +126,7 @@ async function run() {
     app.patch("/car/:id", async (req, res) => {
       const id = req.params.id;
       const updatedCar = req.body;
-      console.log("to update", id, updatedCar);
+
       const query = { _id: new ObjectId(id) };
       const update = {
         $set: {
